@@ -4,6 +4,10 @@
 # Slices must contain L cells of each ingredient and at most H in total
 # No overlapping
 
+# the TO-DO list:
+#todo figure out how to cut up pizza
+
+
 #Final Code:
 
 
@@ -15,9 +19,11 @@
 
 file = open("example.in")
 PIZZA = []
-MIN_TOPPINGS = 0
-MAX_CELLS = 0
 is_first_line = True
+TOT_MUSHROOMS = 0
+TOT_TOMATOES = 0
+global MAX_CELLS
+global MIN_TOPPINGS
 for row_index, row in enumerate(file):
     if is_first_line:
         data = row.split(" ")
@@ -29,9 +35,15 @@ for row_index, row in enumerate(file):
         for char_index, char in enumerate(row):
             if char_index < len(row)-1:
                 PIZZA[row_index-1].append(char)
+                if char == "M":
+                    TOT_MUSHROOMS += 1
+                elif char == "T":
+                    TOT_TOMATOES += 1
 
 for row in PIZZA:
     print(str(row))
+
+
 
 
 
