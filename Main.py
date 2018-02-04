@@ -104,21 +104,21 @@ pizza.print_all()
 
 # Boyd
 # IDEA: start in top-left corner, place the larges block you can(try to keep the M-T ratio == 1:1)
-def is_valid(slice):
-    for row_index, row in enumerate(slice):
-        for col_index, col in enumerate(slice):
-            pass  # Luc start here
-
-
-shapes = []
-for index in range(len(pizza.prime_factors)):
-    shapes.append((pizza.prime_factors[index], pizza.prime_factors[-(index + 1)]))
-print(shapes)
-
-for row_index, row in enumerate(pizza.PIZZA):
-    for col_index, col in enumerate(pizza.PIZZA):
-        for shape in shapes:
-            slice = pizza.get_slice(row_index, row_index + shape[0], col_index, col_index + shape[1])
+# def is_valid(slice):
+#     for row_index, row in enumerate(slice):
+#         for col_index, col in enumerate(slice):
+#             pass  # Luc start here
+#
+#
+# shapes = []
+# for index in range(len(pizza.prime_factors)):
+#     shapes.append((pizza.prime_factors[index], pizza.prime_factors[-(index + 1)]))
+# print(shapes)
+#
+# for row_index, row in enumerate(pizza.PIZZA):
+#     for col_index, col in enumerate(pizza.PIZZA):
+#         for shape in shapes:
+#             slice = pizza.get_slice(row_index, row_index + shape[0], col_index, col_index + shape[1])
 
 # pizza.print_all()
 
@@ -153,7 +153,7 @@ for y in range(pizza.get_height()):
 			mushrooms = 0
 			
 			for y2 in range(ystart, yend + 1):
-				for x2 in range(xstart, xend):
+				for x2 in range(xstart, xend + 1):
 					if pizza.PIZZA[y2][x2] == 'T':
 						tomatoes += 1
 					elif pizza.PIZZA[y2][x2] == 'M':
