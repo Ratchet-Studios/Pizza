@@ -43,6 +43,7 @@ class Pizza(object):
         for num in range(1, self.MAX_CELLS + 1):
             if self.MAX_CELLS % num == 0:
                 self.prime_factors.append(num)
+        self.MT_ratio = self.TOT_MUSHROOMS/self.TOT_TOMATOES
 
     def print_all(self):
         print("Pizza=")
@@ -53,6 +54,7 @@ class Pizza(object):
         self.print_used()
 
     def print_used(self):
+        print("self.used=")
         for row in self.used:
             print(str(row))
 
@@ -75,24 +77,46 @@ file = open("example.in")
 pizza = Pizza(file)
 pizza.print_all()
 
+
 # Boyd
 # IDEA: start in top-left corner, place the larges block you can(try to keep the M-T ratio == 1:1)
 def is_valid(slice):
     for row_index, row in enumerate(slice):
-        for col_index, col in enumerate(slice):
-            pass # Luc start here
+        for col_index, col in enumerate(row):
+            pass  # Luc start here
+
+def calc_MT_ratio(slice):
+    tot_M = 0
+    tot_T = 0
+    for row_index, row in enumerate(slice):
+        for col_index, col in enumerate(row):
+            if col == "M":
+                tot_M += 1
+            elif col == "T":
+                tot_T += 1
 
 
 shapes = []
 for index in range(len(pizza.prime_factors)):
     shapes.append((pizza.prime_factors[index], pizza.prime_factors[-(index + 1)]))
-print(shapes)
+print("possible shapes=" + shapes)
 
 for row_index, row in enumerate(pizza.PIZZA):
-    for col_index, col in enumerate(pizza.PIZZA):
-        for shape in shapes:
-            slice = pizza.get_slice(row_index, row_index + shape[0], col_index, col_index + shape[1])
+    for col_index, col in enumerate(row):
+        if not pizza.used[row_index][col_index]:
+            pieces = []
+            # find all the valid pieces
+            for shape in shapes:
+                try:
+                    pieces.append(pizza.get_slice(row_index, row_index + shape[0] - 1, col_index, col_index + shape[1] - 1))
+                    if is_valid(pieces[-1]):
+                        break
+                except IndexError:  # the shape passed outside of the pizza
+                    pieces.remove(-1)
+            # Greedily select the best piece, looking for a M:T ratio similar to that of the entire pizza
 
+
+pizza.print_all()
 
 
 
