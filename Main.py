@@ -15,7 +15,6 @@ import math
 def validate_solution(slices):
     num_slices=0
     print(num_slices)
-    print
 
 
 class Pizza(object):
@@ -131,6 +130,7 @@ for index in range(len(pizza.prime_factors)):
     shapes.append((pizza.prime_factors[index], pizza.prime_factors[-(index + 1)]))
 print("possible shapes=" + str(shapes))
 
+#STU look here
 for row_index, row in enumerate(pizza.PIZZA):
     for col_index, col in enumerate(row):
         if not pizza.used[row_index][col_index]:
@@ -376,4 +376,4 @@ pizza.MAX_CELLS
 
 
 
-show_score(slices)
+# show_score(slices)
