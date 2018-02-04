@@ -18,16 +18,20 @@ PIZZA = []
 MIN_TOPPINGS = 0
 MAX_CELLS = 0
 is_first_line = True
-for line in file:
+for row_index, row in enumerate(file):
     if is_first_line:
-        data = line.split(" ")
-
+        data = row.split(" ")
+        MIN_TOPPINGS = int(data[2])
+        MAX_CELLS = int(data[3].strip())
         is_first_line = False
-    PIZZA.append([])
-    for index in range(len(line)):
-        PIZZA[index].append(line[index])
+    else:
+        PIZZA.append([])
+        for char_index, char in enumerate(row):
+            if char_index < len(row)-1:
+                PIZZA[row_index-1].append(char)
 
-
+for row in PIZZA:
+    print(str(row))
 
 
 
