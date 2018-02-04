@@ -11,9 +11,6 @@ import sys
 
 
 # Final Code:
-import math
-
-
 class Pizza(object):
     def __init__(self, file):
         is_first_line = True
@@ -73,36 +70,36 @@ class Pizza(object):
         return len(self.PIZZA[0])
 
 
-file = open("example.in")
+file = open("small.in")
 pizza = Pizza(file)
 pizza.print_all()
 
 # Boyd
 # IDEA: start by creating all the smallest slices you can, from there start adding rows/columns to each piece
 
-row_start = -1
-col_start = -1
-have_slice = False
-slices = []
-for row_index, row in enumerate(pizza.PIZZA):
-    for col_index, topping in enumerate(row):
-        if have_slice:
-            if pizza.PIZZA[row_start][col_start] != topping:
-                # todo also check that the requested slice hasn't already been taken
-                slices.append(pizza.get_slice(row_start, row_index, col_start, col_index))
-                have_slice = False
-            elif row_start + 1 < pizza.get_height():
-                if pizza.PIZZA[row_start][col_start] == pizza.PIZZA[row_start + 1][col_start]:
-                    # todo also check that the requested slice hasn't already been taken
-                    slices.append(pizza.get_slice(row_start, row_start + 1, col_start, col_start))
-                    have_slice = False
-
-        else:
-            row_start = row_index
-            col_start = col_index
-            have_slice = True
-print("\n\n\n[BOYD]Result after making some slices:")
-pizza.print_all()
+# row_start = -1
+# col_start = -1
+# have_slice = False
+# slices = []
+# for row_index, row in enumerate(pizza.PIZZA):
+#     for col_index, topping in enumerate(row):
+#         if have_slice:
+#             if pizza.PIZZA[row_start][col_start] != topping:
+#                 # todo also check that the requested slice hasn't already been taken
+#                 slices.append(pizza.get_slice(row_start, row_index, col_start, col_index))
+#                 have_slice = False
+#             elif row_start + 1 < pizza.get_height():
+#                 if pizza.PIZZA[row_start][col_start] == pizza.PIZZA[row_start + 1][col_start]:
+#                     # todo also check that the requested slice hasn't already been taken
+#                     slices.append(pizza.get_slice(row_start, row_start + 1, col_start, col_start))
+#                     have_slice = False
+#
+#         else:
+#             row_start = row_index
+#             col_start = col_index
+#             have_slice = True
+# print("\n\n\n[BOYD]Result after making some slices:")
+# pizza.print_all()
 
 # Stu
 
@@ -125,62 +122,62 @@ for y in range(pizza.get_height()):
 			
 		# potential slice dimensions
 		xstart = x
-		xend = x + 1
+		xend = x
 		ystart = y
-		yend = y + 1
-		while (True):
+		yend = y
+		while (xend - xstart + 1) * (yend - ystart + 1) < pizza.MAX_CELLS:
 			
 			# option 1: do nothing
 			tomatoes = 0
 			mushrooms = 0
 			
-			for y in range(ystart, yend):
-				for x in range(xstart, xend):
-					if pizza.PIZZA[y][x] == 'T':
+			for y2 in range(ystart, yend + 1):
+				for x2 in range(xstart, xend):
+					if pizza.PIZZA[y2][x2] == 'T':
 						tomatoes += 1
-					elif pizza.PIZZA[y][x] == 'M':
+					elif pizza.PIZZA[y2][x2] == 'M':
 						mushrooms += 1
 			
 			# the difference between remaining tomatoes and remaining mushrooms if we choose option 1
-			option_1_difference = math.abs((remaining_tomatoes - tomatoes) - (remaining_mushrooms - mushrooms))
+			option_1_difference = math.fabs((remaining_tomatoes - tomatoes) - (remaining_mushrooms - mushrooms))
 			
 			# option 2: move one across
 			xend += 1
-			if xend == pizza.get_width():
+			if xend >= pizza.get_width() or pizza.used[yend][xend] or ((xend - xstart + 1) * (yend - ystart + 1) > pizza.MAX_CELLS):
 				option_2_difference = sys.maxsize # can't do this option
 			else:
 				tomatoes = 0
 				mushrooms = 0
 				
-				for y in range(ystart, yend):
-					for x in range(xstart, xend):
-						if pizza.PIZZA[y][x] == 'T':
+				for y2 in range(ystart, yend + 1):
+					for x2 in range(xstart, xend + 1):
+						if pizza.PIZZA[y2][x2] == 'T':
 							tomatoes += 1
-						elif pizza.PIZZA[y][x] == 'M':
+						elif pizza.PIZZA[y2][x2] == 'M':
 							mushrooms += 1
 				
 				# the difference between remaining tomatoes and remaining mushrooms if we choose option 2
-				option_2_difference = math.abs((remaining_tomatoes - tomatoes) - (remaining_mushrooms - mushrooms))
+				option_2_difference = math.fabs((remaining_tomatoes - tomatoes) - (remaining_mushrooms - mushrooms))
 			
 			xend -= 1 # undo the change while we test option 3
 			
 			# option 3: move one down
 			yend += 1
-			if yend == pizza.get_height():
+			if yend >= pizza.get_height() or pizza.used[yend][xend] or ((xend - xstart + 1) * (yend - ystart + 1) > pizza.MAX_CELLS):
 				option_3_difference = sys.maxsize # can't do this option
 			else:
 				tomatoes = 0
 				mushrooms = 0
 				
-				for y in range(ystart, yend):
-					for x in range(xstart, xend):
-						if pizza.PIZZA[y][x] == 'T':
+				for y2 in range(ystart, yend + 1):
+					for x2 in range(xstart, xend + 1):
+						if pizza.PIZZA[y2][x2] == 'T':
 							tomatoes += 1
-						elif pizza.PIZZA[y][x] == 'M':
+						elif pizza.PIZZA[y2][x2] == 'M':
 							mushrooms += 1
 				
 				# the difference between remaining tomatoes and remaining mushrooms if we choose option 3
-				option_3_difference = math.abs((remaining_tomatoes - tomatoes) - (remaining_mushrooms - mushrooms))
+				option_3_difference = math.fabs((remaining_tomatoes - tomatoes) - (remaining_mushrooms - mushrooms))
 			
 			yend -= 1 # undo the change
 			
@@ -196,18 +193,21 @@ for y in range(pizza.get_height()):
 			else:
 				# option 1 wins! we're not going to change our slice size
 				break
-
+			
+		tomatoes = 0
+		mushrooms = 0
+		
+		for y2 in range(ystart, yend + 1):
+			for x2 in range(xstart, xend + 1):
+				pizza.used[y2][x2] = True
+				if pizza.PIZZA[y2][x2] == 'T':
+					tomatoes += 1
+				elif pizza.PIZZA[y2][x2] == 'M':
+					mushrooms += 1
+		
+		remaining_mushrooms -= mushrooms
+		remaining_tomatoes -= tomatoes
+		print("sliced between rows (" + str(ystart) + "," + str(yend) + ") and columns (" + str(xstart) + "," + str(xend) + ")")
 # Luc
-
-def calculate_slice_shapes(max_cells):
-    """Split into prime factors"""
-    cells = []
-    for i in range(1,max_cells+1):
-        if max_cells % i == 0:
-            cells.append('{}x{}'.format(str(i), str(max_cells // i)))
-    print(cells)
-
-
 # TODO Split graph into tetris-style array.
-
-
+pizza.MAX_CELLS
