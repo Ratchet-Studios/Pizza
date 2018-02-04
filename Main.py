@@ -70,7 +70,7 @@ class Pizza(object):
         """ Returns the cut of our pizza & marks the proper cells as being used
             NOTE: The rows and columns given as parameters ARE INCLUDED in the final pizza slice
             returns -1 if is_valid = False"""
-        if (is_valid(row_from, row_to, col_from, col_to)):
+        if (pizza.is_valid_slice(row_from, row_to, col_from, col_to)):
             for row_index, row in enumerate(self.used[row_from:row_to + 1][col_from:col_to + 1]):
                 for col_index, col in enumerate(self.used[row_from:row_to + 1][col_from:col_to + 1]):
                     self.used[row_index][col_index] = True
