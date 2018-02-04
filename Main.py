@@ -13,6 +13,20 @@
 #Boyd's Workspace
 
 
+file = open("example.in")
+PIZZA = []
+MIN_TOPPINGS = 0
+MAX_CELLS = 0
+is_first_line = True
+for line in file:
+    if is_first_line:
+        data = line.split(" ")
+
+        is_first_line = False
+    PIZZA.append([])
+    for index in range(len(line)):
+        PIZZA[index].append(line[index])
+
 
 
 
