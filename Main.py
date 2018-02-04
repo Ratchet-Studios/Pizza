@@ -36,22 +36,28 @@ class Pizza(object):
             for j in range(len(self.PIZZA[i])):
                 self.used[i].append(False)
 
-    def print(self):
+    def print_all(self):
         print("Pizza=")
         for row in self.PIZZA:
             print(str(row))
-        print("mushrooms={0}, tomatoes={1}, max_cells={2}, min_toppings={3}")
+        print("mushrooms={0}, tomatoes={1}, max_cells={2}, min_toppings={3}".format(
+            self.TOT_MUSHROOMS, self.TOT_TOMATOES, self.MAX_CELLS, self.MIN_TOPPINGS))
+        self.print_used()
 
     def print_used(self):
         for row in self.used:
             print(str(row))
 
+    def cut(self, row_from, row_to, col_from, col_to):
+        for
+
+
 
 file = open("example.in")
 pizza = Pizza(file)
-pizza.print()
+pizza.print_all()
 
-
+# Boyd
 
 
 
