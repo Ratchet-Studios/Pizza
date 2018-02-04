@@ -36,6 +36,11 @@ class Pizza(object):
             for j in range(len(self.PIZZA[i])):
                 self.used[i].append(False)
 
+        self.prime_factors = []
+        for num in range(self.MAX_CELLS):
+            if num % self.MAX_CELLS == 0:
+                self.prime_factors.append(num)
+
     def print_all(self):
         print("Pizza=")
         for row in self.PIZZA:
@@ -57,9 +62,12 @@ class Pizza(object):
         return self.PIZZA[row_from:row_to + 1][col_from:col_to + 1]
 
 
+
+
 file = open("example.in")
 pizza = Pizza(file)
 pizza.print_all()
+
 
 # Boyd
 
