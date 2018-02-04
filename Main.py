@@ -79,14 +79,20 @@ class Pizza(object):
 
         # Correct number of ingredients
         num_mushrooms, num_tomatoes = 0, 0
-        for row_from, row in enumerate(self.PIZZA[row_from:row_to + 1][col_from:col_to + 1]):
-            for col_from, col in enumerate(self.PIZZA[row_from:row_to + 1][col_from:col_to + 1]):
+        for row_index, row in enumerate(self.PIZZA[row_from:row_to + 1][col_from:col_to + 1]):
+            for col_index, col in enumerate(self.PIZZA[row_from:row_to + 1][col_from:col_to + 1]):
                 if (self.PIZZA[row_index][col_index] == 'T'):
                     num_tomatoes += 1
                 else:
                     num_mushrooms += 1
         if num_tomatoes < pizza.MIN_TOPPINGS or num_mushrooms < pizza.MIN_TOPPINGS or num_tomatoes + num_mushrooms > pizza.MAX_CELLS:
             return False
+
+        # check for overlaps
+        for row_index, row in enumerate(self.used[row_from:row_to + 1][col_from:col_to + 1]):
+            for col_index, col in enumerate(self.used[row_from:row_to + 1][col_from:col_to + 1]):
+                if(self.used[row_index][col_index] == True):
+                    return False
 
         return True;
 
