@@ -8,6 +8,9 @@
 
 
 # Final Code:
+import math
+
+
 class Pizza(object):
     def __init__(self, file):
         is_first_line = True
@@ -137,5 +140,16 @@ for y in range(pizza.get_height()):
 
 
 # Luc
+
+def calculate_slice_shapes(max_cells):
+    """Split into prime factors"""
+    cells = []
+    for i in range(1,max_cells+1):
+        if max_cells % i == 0:
+            cells.append('{}x{}'.format(str(i), str(max_cells // i)))
+    print(cells)
+
+
 # TODO Split graph into tetris-style array.
-pizza.MAX_CELLS
+
+
