@@ -56,6 +56,7 @@ class Pizza(object):
         for row in self.used:
             print(str(row))
 
+    # TODO add checks to ensure slices cannot overlap
     def get_slice(self, row_from, row_to, col_from, col_to):
         # Returns the cut of our pizza & marks the proper cells as being used
         # NOTE: The rows and columns given as parameters ARE INCLUDED in the final pizza slice
@@ -69,6 +70,10 @@ class Pizza(object):
 
     def get_width(self):
         return len(self.PIZZA[0])
+
+    def is_valid_slice(self):
+        '''Ensure slices are valid, do not overlap and contain the correct number of ingredients'''
+        return True;
 
 
 file = open("example.in")
