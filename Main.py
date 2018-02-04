@@ -77,111 +77,126 @@ pizza.print_all()
 
 # Boyd
 # IDEA: start in top-left corner, place the larges block you can(try to keep the M-T ratio == 1:1)
+def is_valid(slice):
+    for row_index, row in enumerate(slice):
+        for col_index, col in enumerate(slice):
+            pass # Luc start here
+
 
 shapes = []
-print(pizza.prime_factors)
+for index in range(len(pizza.prime_factors)):
+    shapes.append((pizza.prime_factors[index], pizza.prime_factors[-(index + 1)]))
+print(shapes)
 
-pizza.print_all()
+for row_index, row in enumerate(pizza.PIZZA):
+    for col_index, col in enumerate(pizza.PIZZA):
+        for shape in shapes:
+            slice = pizza.get_slice(row_index, row_index + shape[0], col_index, col_index + shape[1])
+
+
+
+
+# pizza.print_all()
 
 # Stu
 
-
-STR_LIMITING_INGREDIENT = 'T'
-remaining_tomatoes = pizza.TOT_TOMATOES
-remaining_mushrooms = pizza.TOT_MUSHROOMS
-
-if remaining_mushrooms < remaining_tomatoes:
-    STR_LIMITING_INGREDIENT = 'M'
-else:
-    STR_LIMITING_INGREDIENT = 'T'
-
-for y in range(pizza.get_height()):
-    for x in range(pizza.get_width()):
-        if pizza.used[y][x]:
-            continue
-
-        # potential slice dimensions
-        xstart = x
-        xend = x + 1
-        ystart = y
-        yend = y + 1
-        while (True):
-
-            # option 1: do nothing
-            tomatoes = 0
-            mushrooms = 0
-
-            for y in range(ystart, yend):
-                for x in range(xstart, xend):
-                    if pizza.PIZZA[y][x] == 'T':
-                        tomatoes += 1
-                    elif pizza.PIZZA[y][x] == 'M':
-                        mushrooms += 1
-
-            # the difference between remaining tomatoes and remaining mushrooms if we choose option 1
-            option_1_difference = math.abs((remaining_tomatoes - tomatoes) - (remaining_mushrooms - mushrooms))
-
-            # option 2: move one across
-            xend += 1
-            if xend == pizza.get_width():
-                option_2_difference = sys.maxsize  # can't do this option
-            else:
-                tomatoes = 0
-                mushrooms = 0
-
-                for y in range(ystart, yend):
-                    for x in range(xstart, xend):
-                        if pizza.PIZZA[y][x] == 'T':
-                            tomatoes += 1
-                        elif pizza.PIZZA[y][x] == 'M':
-                            mushrooms += 1
-
-                # the difference between remaining tomatoes and remaining mushrooms if we choose option 2
-                option_2_difference = math.abs((remaining_tomatoes - tomatoes) - (remaining_mushrooms - mushrooms))
-
-            xend -= 1  # undo the change while we test option 3
-
-            # option 3: move one down
-            yend += 1
-            if yend == pizza.get_height():
-                option_3_difference = sys.maxsize  # can't do this option
-            else:
-                tomatoes = 0
-                mushrooms = 0
-
-                for y in range(ystart, yend):
-                    for x in range(xstart, xend):
-                        if pizza.PIZZA[y][x] == 'T':
-                            tomatoes += 1
-                        elif pizza.PIZZA[y][x] == 'M':
-                            mushrooms += 1
-
-                # the difference between remaining tomatoes and remaining mushrooms if we choose option 3
-                option_3_difference = math.abs((remaining_tomatoes - tomatoes) - (remaining_mushrooms - mushrooms))
-
-            yend -= 1  # undo the change
-
-            # time to decide which opion to take
-            # we want to minimize difference between the remaining mushrooms and remaining tomatoes
-
-            if option_3_difference <= option_2_difference and option_3_difference <= option_1_difference:
-                # option 3 wins! we're going to expand our slice one down!
-                yend += 1
-            elif option_2_difference <= option_1_difference:
-                # option 2 wins! we're going to expand our slice one across!
-                xend += 1
-            else:
-                # option 1 wins! we're not going to change our slice size
-                break
-
-# Luc
-
-def calculate_slice_shapes(max_cells):
-    """Split into prime factors"""
-    cells = []
-    for i in range(1, max_cells + 1):
-        if max_cells % i == 0:
-            cells.append('{}x{}'.format(str(i), str(max_cells // i)))
-    print(cells)
-
-# TODO Split graph into tetris-style array.
+#
+# STR_LIMITING_INGREDIENT = 'T'
+# remaining_tomatoes = pizza.TOT_TOMATOES
+# remaining_mushrooms = pizza.TOT_MUSHROOMS
+#
+# if remaining_mushrooms < remaining_tomatoes:
+#     STR_LIMITING_INGREDIENT = 'M'
+# else:
+#     STR_LIMITING_INGREDIENT = 'T'
+#
+# for y in range(pizza.get_height()):
+#     for x in range(pizza.get_width()):
+#         if pizza.used[y][x]:
+#             continue
+#
+#         # potential slice dimensions
+#         xstart = x
+#         xend = x + 1
+#         ystart = y
+#         yend = y + 1
+#         while (True):
+#
+#             # option 1: do nothing
+#             tomatoes = 0
+#             mushrooms = 0
+#
+#             for y in range(ystart, yend):
+#                 for x in range(xstart, xend):
+#                     if pizza.PIZZA[y][x] == 'T':
+#                         tomatoes += 1
+#                     elif pizza.PIZZA[y][x] == 'M':
+#                         mushrooms += 1
+#
+#             # the difference between remaining tomatoes and remaining mushrooms if we choose option 1
+#             option_1_difference = math.abs((remaining_tomatoes - tomatoes) - (remaining_mushrooms - mushrooms))
+#
+#             # option 2: move one across
+#             xend += 1
+#             if xend == pizza.get_width():
+#                 option_2_difference = sys.maxsize  # can't do this option
+#             else:
+#                 tomatoes = 0
+#                 mushrooms = 0
+#
+#                 for y in range(ystart, yend):
+#                     for x in range(xstart, xend):
+#                         if pizza.PIZZA[y][x] == 'T':
+#                             tomatoes += 1
+#                         elif pizza.PIZZA[y][x] == 'M':
+#                             mushrooms += 1
+#
+#                 # the difference between remaining tomatoes and remaining mushrooms if we choose option 2
+#                 option_2_difference = math.abs((remaining_tomatoes - tomatoes) - (remaining_mushrooms - mushrooms))
+#
+#             xend -= 1  # undo the change while we test option 3
+#
+#             # option 3: move one down
+#             yend += 1
+#             if yend == pizza.get_height():
+#                 option_3_difference = sys.maxsize  # can't do this option
+#             else:
+#                 tomatoes = 0
+#                 mushrooms = 0
+#
+#                 for y in range(ystart, yend):
+#                     for x in range(xstart, xend):
+#                         if pizza.PIZZA[y][x] == 'T':
+#                             tomatoes += 1
+#                         elif pizza.PIZZA[y][x] == 'M':
+#                             mushrooms += 1
+#
+#                 # the difference between remaining tomatoes and remaining mushrooms if we choose option 3
+#                 option_3_difference = math.abs((remaining_tomatoes - tomatoes) - (remaining_mushrooms - mushrooms))
+#
+#             yend -= 1  # undo the change
+#
+#             # time to decide which opion to take
+#             # we want to minimize difference between the remaining mushrooms and remaining tomatoes
+#
+#             if option_3_difference <= option_2_difference and option_3_difference <= option_1_difference:
+#                 # option 3 wins! we're going to expand our slice one down!
+#                 yend += 1
+#             elif option_2_difference <= option_1_difference:
+#                 # option 2 wins! we're going to expand our slice one across!
+#                 xend += 1
+#             else:
+#                 # option 1 wins! we're not going to change our slice size
+#                 break
+#
+# # Luc
+#
+# def calculate_slice_shapes(max_cells):
+#     """Split into prime factors"""
+#     cells = []
+#     for i in range(1, max_cells + 1):
+#         if max_cells % i == 0:
+#             cells.append('{}x{}'.format(str(i), str(max_cells // i)))
+#     print(cells)
+#
+# # TODO Split graph into tetris-style array.
