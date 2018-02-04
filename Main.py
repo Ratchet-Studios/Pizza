@@ -40,9 +40,20 @@ for row_index, row in enumerate(file):
                 elif char == "T":
                     TOT_TOMATOES += 1
 
-for row in PIZZA:
-    print(str(row))
+def print_pizza():
+    for row in PIZZA:
+        print(str(row))
+    
+    
+used = []
+for i in range(len(PIZZA)):
+    used.append([])
+    for j in range(len(PIZZA[i])):
+        used[i].append(False)
 
+def print_used():
+    for row in used:
+        print(str(row))
 
 
 
