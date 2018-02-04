@@ -45,8 +45,8 @@ class Pizza(object):
         print("Pizza=")
         for row in self.PIZZA:
             print(str(row))
-        print("mushrooms={0}, tomatoes={1}, max_cell_size={2}, min_toppings={3}".format(
-            self.TOT_MUSHROOMS, self.TOT_TOMATOES, self.MAX_CELL_SIZE, self.MIN_TOPPINGS))
+        print("mushrooms={0}, tomatoes={1}, max_cell_size={2}, min_toppings={3}, prime_factors={4}".format(
+            self.TOT_MUSHROOMS, self.TOT_TOMATOES, self.MAX_CELL_SIZE, self.MIN_TOPPINGS, self.prime_factors))
         self.print_used()
 
     def print_used(self):
