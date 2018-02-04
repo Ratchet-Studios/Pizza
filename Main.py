@@ -8,9 +8,10 @@
 
 import math
 import sys
-
-
 # Final Code:
+import math
+
+
 class Pizza(object):
     def __init__(self, file):
         is_first_line = True
@@ -39,8 +40,8 @@ class Pizza(object):
                 self.used[i].append(False)
 
         self.prime_factors = []
-        for num in range(self.MAX_CELLS):
-            if num % self.MAX_CELLS == 0:
+        for num in range(1, self.MAX_CELLS + 1):
+            if self.MAX_CELLS % num == 0:
                 self.prime_factors.append(num)
 
     def print_all(self):
@@ -55,13 +56,17 @@ class Pizza(object):
         for row in self.used:
             print(str(row))
 
+    # TODO add checks to ensure slices cannot overlap
     def get_slice(self, row_from, row_to, col_from, col_to):
-        # Returns the cut of our pizza & marks the proper cells as being used
-        # NOTE: The rows and columns given as parameters ARE INCLUDED in the final pizza slice
-        for row_index, row in enumerate(self.used[row_from:row_to + 1][col_from:col_to + 1]):
-            for col_index, col in enumerate(self.used[row_from:row_to + 1][col_from:col_to + 1]):
-                self.used[row_index][col_index] = True
-        return self.PIZZA[row_from:row_to + 1][col_from:col_to + 1]
+        """ Returns the cut of our pizza & marks the proper cells as being used
+            NOTE: The rows and columns given as parameters ARE INCLUDED in the final pizza slice
+            returns -1 if is_valid = False"""
+        if (is_valid(row_from, row_to, col_from, col_to)):
+            for row_index, row in enumerate(self.used[row_from:row_to + 1][col_from:col_to + 1]):
+                for col_index, col in enumerate(self.used[row_from:row_to + 1][col_from:col_to + 1]):
+                    self.used[row_index][col_index] = True
+            return self.PIZZA[row_from:row_to + 1][col_from:col_to + 1]
+        return -1
 
     def get_height(self):
         return len(self.PIZZA)
@@ -69,36 +74,52 @@ class Pizza(object):
     def get_width(self):
         return len(self.PIZZA[0])
 
+    def is_valid_slice(self, row_from, row_to, col_from, col_to):
+        '''Ensure slices are valid, do not overlap and contain the correct number of ingredients'''
 
-file = open("small.in")
+        # Correct number of ingredients
+        num_mushrooms, num_tomatoes = 0, 0
+        for row_index, row in enumerate(self.PIZZA[row_from:row_to + 1][col_from:col_to + 1]):
+            for col_index, col in enumerate(self.PIZZA[row_from:row_to + 1][col_from:col_to + 1]):
+                if (self.PIZZA[row_index][col_index] == 'T'):
+                    num_tomatoes += 1
+                else:
+                    num_mushrooms += 1
+        if num_tomatoes < pizza.MIN_TOPPINGS or num_mushrooms < pizza.MIN_TOPPINGS or num_tomatoes + num_mushrooms > pizza.MAX_CELLS:
+            return False
+
+        # check for overlaps
+        for row_index, row in enumerate(self.used[row_from:row_to + 1][col_from:col_to + 1]):
+            for col_index, col in enumerate(self.used[row_from:row_to + 1][col_from:col_to + 1]):
+                if(self.used[row_index][col_index] == True):
+                    return False
+
+        return True;
+
+
+file = open("example.in")
 pizza = Pizza(file)
 pizza.print_all()
 
-# Boyd
-# IDEA: start by creating all the smallest slices you can, from there start adding rows/columns to each piece
 
-# row_start = -1
-# col_start = -1
-# have_slice = False
-# slices = []
-# for row_index, row in enumerate(pizza.PIZZA):
-#     for col_index, topping in enumerate(row):
-#         if have_slice:
-#             if pizza.PIZZA[row_start][col_start] != topping:
-#                 # todo also check that the requested slice hasn't already been taken
-#                 slices.append(pizza.get_slice(row_start, row_index, col_start, col_index))
-#                 have_slice = False
-#             elif row_start + 1 < pizza.get_height():
-#                 if pizza.PIZZA[row_start][col_start] == pizza.PIZZA[row_start + 1][col_start]:
-#                     # todo also check that the requested slice hasn't already been taken
-#                     slices.append(pizza.get_slice(row_start, row_start + 1, col_start, col_start))
-#                     have_slice = False
-#
-#         else:
-#             row_start = row_index
-#             col_start = col_index
-#             have_slice = True
-# print("\n\n\n[BOYD]Result after making some slices:")
+# Boyd
+# IDEA: start in top-left corner, place the larges block you can(try to keep the M-T ratio == 1:1)
+def is_valid(slice):
+    for row_index, row in enumerate(slice):
+        for col_index, col in enumerate(slice):
+            pass  # Luc start here
+
+
+shapes = []
+for index in range(len(pizza.prime_factors)):
+    shapes.append((pizza.prime_factors[index], pizza.prime_factors[-(index + 1)]))
+print(shapes)
+
+for row_index, row in enumerate(pizza.PIZZA):
+    for col_index, col in enumerate(pizza.PIZZA):
+        for shape in shapes:
+            slice = pizza.get_slice(row_index, row_index + shape[0], col_index, col_index + shape[1])
+
 # pizza.print_all()
 
 # Stu
