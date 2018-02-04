@@ -58,13 +58,17 @@ class Pizza(object):
         for row in self.used:
             print(str(row))
 
+    # TODO add checks to ensure slices cannot overlap
     def get_slice(self, row_from, row_to, col_from, col_to):
-        # Returns the cut of our pizza & marks the proper cells as being used
-        # NOTE: The rows and columns given as parameters ARE INCLUDED in the final pizza slice
-        for row_index, row in enumerate(self.used[row_from:row_to + 1][col_from:col_to + 1]):
-            for col_index, col in enumerate(self.used[row_from:row_to + 1][col_from:col_to + 1]):
-                self.used[row_index][col_index] = True
-        return self.PIZZA[row_from:row_to + 1][col_from:col_to + 1]
+        """ Returns the cut of our pizza & marks the proper cells as being used
+            NOTE: The rows and columns given as parameters ARE INCLUDED in the final pizza slice
+            returns -1 if is_valid = False"""
+        if (is_valid(row_from, row_to, col_from, col_to)):
+            for row_index, row in enumerate(self.used[row_from:row_to + 1][col_from:col_to + 1]):
+                for col_index, col in enumerate(self.used[row_from:row_to + 1][col_from:col_to + 1]):
+                    self.used[row_index][col_index] = True
+            return self.PIZZA[row_from:row_to + 1][col_from:col_to + 1]
+        return -1
 
     def get_height(self):
         return len(self.PIZZA)
@@ -72,18 +76,29 @@ class Pizza(object):
     def get_width(self):
         return len(self.PIZZA[0])
 
+    def is_valid_slice(self, row_from, row_to, col_from, col_to):
+        '''Ensure slices are valid, do not overlap and contain the correct number of ingredients'''
+
+        # Correct number of ingredients
+        num_mushrooms, num_tomatoes = 0, 0
+        for row_from, row in enumerate(self.PIZZA[row_from:row_to + 1][col_from:col_to + 1]):
+            for col_from, col in enumerate(self.PIZZA[row_from:row_to + 1][col_from:col_to + 1]):
+                if (self.PIZZA[row_index][col_index] == 'T'):
+                    num_tomatoes += 1
+                else:
+                    num_mushrooms += 1
+        if num_tomatoes < pizza.MIN_TOPPINGS or num_mushrooms < pizza.MIN_TOPPINGS or num_tomatoes + num_mushrooms > pizza.MAX_CELLS:
+            return False
+
+        return True;
+
 
 file = open("example.in")
 pizza = Pizza(file)
 pizza.print_all()
 
-
 # Boyd
 # IDEA: start in top-left corner, place the larges block you can(try to keep the M-T ratio == 1:1)
-def is_valid(slice):
-    for row_index, row in enumerate(slice):
-        for col_index, col in enumerate(row):
-            pass  # Luc start here
 
 def calc_MT_ratio(slice):
     tot_M = 0
@@ -94,7 +109,6 @@ def calc_MT_ratio(slice):
                 tot_M += 1
             elif col == "T":
                 tot_T += 1
-
 
 shapes = []
 for index in range(len(pizza.prime_factors)):
