@@ -19,7 +19,7 @@ class Pizza(object):
             if is_first_line:
                 data = row.split(" ")
                 self.MIN_TOPPINGS = int(data[2])
-                self.MAX_CELL_SIZE = int(data[3].strip())
+                self.MAX_CELLS = int(data[3].strip())
                 is_first_line = False
             else:
                 self.PIZZA.append([])
@@ -46,7 +46,7 @@ class Pizza(object):
         for row in self.PIZZA:
             print(str(row))
         print("mushrooms={0}, tomatoes={1}, max_cell_size={2}, min_toppings={3}, prime_factors={4}".format(
-            self.TOT_MUSHROOMS, self.TOT_TOMATOES, self.MAX_CELL_SIZE, self.MIN_TOPPINGS, self.prime_factors))
+            self.TOT_MUSHROOMS, self.TOT_TOMATOES, self.MAX_CELLS, self.MIN_TOPPINGS, self.prime_factors))
         self.print_used()
 
     def print_used(self):
@@ -62,20 +62,30 @@ class Pizza(object):
         return self.PIZZA[row_from:row_to + 1][col_from:col_to + 1]
 
 
-
-
 file = open("example.in")
 pizza = Pizza(file)
 pizza.print_all()
 
-
 # Boyd
-#IDEA: start by creating all the smallest slices you can, from there start adding rows/columns to each piece
+# IDEA: start by creating all the smallest slices you can, from there start adding rows/columns to each piece
 
+row_start = -1
+col_start = -1
+have_slice = False
+for row_index, row in enumerate(pizza.PIZZA):
+    for col_index, topping in enumerate(row):
+        if have_slice:
+            if pizza.PIZZA[row_start][col_start] != topping:
+                pizza.get_slice(row_start, row_index, col_start, col_index)
+
+        else:
+            row_start = row_index
+            col_start = col_index
+            have_slice = True
 
 # Stu
 
 
 # Luc
 # TODO Split graph into tetris-style array.
-pizza.MAX_CELL_SIZE
+pizza.MAX_CELLS
