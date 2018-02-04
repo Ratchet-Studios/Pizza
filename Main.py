@@ -70,8 +70,7 @@ pizza.print_all()
 
 
 # Boyd
-
-
+#IDEA: start by creating all the smallest slices you can, from there start adding rows/columns to each piece
 
 
 # Stu
