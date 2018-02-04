@@ -13,6 +13,7 @@ import math
 
 
 def validate_solution(slices):
+    print('Solution\n')
     num_slices = len(slices)
     print(num_slices)
     for slice in slices:
@@ -63,17 +64,17 @@ class Pizza(object):
         for row in self.used:
             print(str(row))
 
-    # TODO add checks to ensure slices cannot overlap
-    def get_slice(self, row_from, row_to, col_from, col_to):
-        """ Returns the cut of our pizza & marks the proper cells as being used
-            NOTE: The rows and columns given as parameters ARE INCLUDED in the final pizza slice
-            returns -1 if is_valid = False"""
-        if (is_valid(row_from, row_to, col_from, col_to)):
-            for row_index, row in enumerate(self.used[row_from:row_to + 1][col_from:col_to + 1]):
-                for col_index, col in enumerate(self.used[row_from:row_to + 1][col_from:col_to + 1]):
-                    self.used[row_index][col_index] = True
-            return self.PIZZA[row_from:row_to + 1][col_from:col_to + 1]
-        return -1
+    # # TODO add checks to ensure slices cannot overlap
+    # def get_slice(self, row_from, row_to, col_from, col_to):
+    #     """ Returns the cut of our pizza & marks the proper cells as being used
+    #         NOTE: The rows and columns given as parameters ARE INCLUDED in the final pizza slice
+    #         returns -1 if is_valid = False"""
+    #     if (is_valid(row_from, row_to, col_from, col_to)):
+    #         for row_index, row in enumerate(self.used[row_from:row_to + 1][col_from:col_to + 1]):
+    #             for col_index, col in enumerate(self.used[row_from:row_to + 1][col_from:col_to + 1]):
+    #                 self.used[row_index][col_index] = True
+    #         return self.PIZZA[row_from:row_to + 1][col_from:col_to + 1]
+    #     return -1
 
     def get_height(self):
         return len(self.PIZZA)
