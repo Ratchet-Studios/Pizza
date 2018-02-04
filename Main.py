@@ -6,6 +6,9 @@
 
 # the TO-DO list:
 
+import math
+import sys
+
 
 # Final Code:
 class Pizza(object):
@@ -116,25 +119,80 @@ for y in range(pizza.get_height()):
 	for x in range(pizza.get_width()):
 		if pizza.used[y][x]:
 			continue
-
+			
+		# potential slice dimensions
+		xstart = x
+		xend = x + 1
+		ystart = y
+		yend = y + 1
 		while (True):
-			# potential slice dimensions
-			xstart = x
-			xend = x + 1
-			ystart = y
-			yend = y + 1
-
+			
 			# option 1: do nothing
 			tomatoes = 0
 			mushrooms = 0
-
-
-
-			for y in range()
-
-
-
-
+			
+			for y in range(ystart, yend):
+				for x in range(xstart, xend):
+					if pizza.PIZZA[y][x] == 'T':
+						tomatoes += 1
+					elif pizza.PIZZA[y][x] == 'M':
+						mushrooms += 1
+			
+			# the difference between remaining tomatoes and remaining mushrooms if we choose option 1
+			option_1_difference = math.abs((remaining_tomatoes - tomatoes) - (remaining_mushrooms - mushrooms))
+			
+			# option 2: move one across
+			xend += 1
+			if xend == pizza.get_width():
+				option_2_difference = sys.maxsize # can't do this option
+			else:
+				tomatoes = 0
+				mushrooms = 0
+				
+				for y in range(ystart, yend):
+					for x in range(xstart, xend):
+						if pizza.PIZZA[y][x] == 'T':
+							tomatoes += 1
+						elif pizza.PIZZA[y][x] == 'M':
+							mushrooms += 1
+				
+				# the difference between remaining tomatoes and remaining mushrooms if we choose option 2
+				option_2_difference = math.abs((remaining_tomatoes - tomatoes) - (remaining_mushrooms - mushrooms))
+			
+			xend -= 1 # undo the change while we test option 3
+			
+			# option 3: move one down
+			yend += 1
+			if yend == pizza.get_height():
+				option_3_difference = sys.maxsize # can't do this option
+			else:
+				tomatoes = 0
+				mushrooms = 0
+				
+				for y in range(ystart, yend):
+					for x in range(xstart, xend):
+						if pizza.PIZZA[y][x] == 'T':
+							tomatoes += 1
+						elif pizza.PIZZA[y][x] == 'M':
+							mushrooms += 1
+				
+				# the difference between remaining tomatoes and remaining mushrooms if we choose option 3
+				option_3_difference = math.abs((remaining_tomatoes - tomatoes) - (remaining_mushrooms - mushrooms))
+			
+			yend -= 1 # undo the change
+			
+			# time to decide which opion to take
+			# we want to minimize difference between the remaining mushrooms and remaining tomatoes
+		
+			if option_3_difference <= option_2_difference and option_3_difference <= option_1_difference:
+				# option 3 wins! we're going to expand our slice one down!
+				yend += 1
+			elif option_2_difference <= option_1_difference:
+				# option 2 wins! we're going to expand our slice one across!
+				xend += 1
+			else:
+				# option 1 wins! we're not going to change our slice size
+				break
 
 # Luc
 # TODO Split graph into tetris-style array.
