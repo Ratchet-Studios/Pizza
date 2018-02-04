@@ -1,6 +1,6 @@
 # Pizza represented as 2D array
 # Each cell contains either a (M)ushroom or a (T)omato
-# A slice has no holes and is rpresented by two rows and columns
+# A slice has no holes and is represented by two rows and columns
 # Slices must contain L cells of each ingredient and at most H in total
 # No overlapping
 
@@ -19,7 +19,7 @@ class Pizza(object):
             if is_first_line:
                 data = row.split(" ")
                 self.MIN_TOPPINGS = int(data[2])
-                self.MAX_CELLS = int(data[3].strip())
+                self.MAX_CELL_SIZE = int(data[3].strip())
                 is_first_line = False
             else:
                 self.PIZZA.append([])
@@ -45,8 +45,8 @@ class Pizza(object):
         print("Pizza=")
         for row in self.PIZZA:
             print(str(row))
-        print("mushrooms={0}, tomatoes={1}, max_cells={2}, min_toppings={3}".format(
-            self.TOT_MUSHROOMS, self.TOT_TOMATOES, self.MAX_CELLS, self.MIN_TOPPINGS))
+        print("mushrooms={0}, tomatoes={1}, max_cell_size={2}, min_toppings={3}".format(
+            self.TOT_MUSHROOMS, self.TOT_TOMATOES, self.MAX_CELL_SIZE, self.MIN_TOPPINGS))
         self.print_used()
 
     def print_used(self):
@@ -73,9 +73,10 @@ pizza.print_all()
 
 
 
+
 # Stu
 
 
-
-
 # Luc
+# TODO Split graph into tetris-style array.
+pizza.MAX_CELL_SIZE
