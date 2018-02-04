@@ -55,6 +55,12 @@ class Pizza(object):
             for col in self.used[row_from:row_to + 1][col_from:col_to + 1]:
                 self.used[row][col] = True
         return self.PIZZA[row_from:row_to + 1][col_from:col_to + 1]
+    
+    def get_height(self):
+        return len(self.PIZZA)
+    
+    def get_width(self):
+        return  len(self.PIZZA[0])
 
 
 file = open("example.in")
@@ -67,7 +73,35 @@ pizza.print_all()
 
 # Stu
 
+STR_LIMITING_INGREDIENT = 'T'
+remaining_tomatoes = pizza.TOT_TOMATOES
+remaining_mushrooms = pizza.TOT_MUSHROOMS
 
+if remaining_mushrooms < remaining_tomatoes:
+    STR_LIMITING_INGREDIENT = 'M'
+else:
+    STR_LIMITING_INGREDIENT = 'T'
+
+for y in range(pizza.get_height()):
+	for x in range(pizza.get_width()):
+		if pizza.used[y][x]:
+			continue
+		
+		while (True):
+			# potential slice dimensions
+			xstart = x
+			xend = x + 1
+			ystart = y
+			yend = y + 1
+			
+			# option 1: do nothing
+			tomatoes = 0
+			mushrooms = 0
+			
+			for y in range()
+
+    
+    
 
 
 # Luc
