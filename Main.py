@@ -12,14 +12,6 @@ import sys
 import math
 
 
-def validate_solution(slices):
-    print('Solution\n')
-    num_slices = len(slices)
-    print(num_slices)
-    for slice in slices:
-        print('{} {} {} {}'.format(slice[0], slice[1], slice[2], slice[3]))
-
-
 class Pizza(object):
     def __init__(self, file):
         is_first_line = True
@@ -86,7 +78,6 @@ class Pizza(object):
 
     def is_valid_slice(self, row_from, row_to, col_from, col_to):
         '''Ensure slices are valid, do not overlap and contain the correct number of ingredients'''
-
         # Correct number of ingredients
         num_mushrooms, num_tomatoes = 0, 0
         for row_index, row in enumerate(self.PIZZA[row_from:row_to + 1][col_from:col_to + 1]):
@@ -129,59 +120,73 @@ file = open("example.in")
 pizza = Pizza(file)
 pizza.print_all()
 
+
+def validate_solution(slices):
+    print('Solution\n')
+    num_slices = 0
+    print(num_slices)
+    for slice in slices:
+        # for every item in each slice count mushrooms and tomatoes and ensure that they are more than the minimum
+        # and the sum is less than the maximum else invalidate and do not print, do not increment counter
+        for row in range(slice[0], slice[2] + 1):
+            for col in range(slice[1], slice[2] + 1):
+                print('{} {} {} {}'.format(slice[0], slice[1], slice[2], slice[3]))
+                num_slices+=1
+
+
 # Boyd
 # IDEA: start in top-left corner, place the larges block you can(try to keep the M-T ratio == 1:1)
 
-def calc_MT_ratio(slice):
-    print("slice to be ratio-ed=" + str(slice))
-    tot_M = 0
-    tot_T = 0
-    for row_index, row in enumerate(slice):
-        for col_index, col in enumerate(row):
-            if col == "M":
-                tot_M += 1
-            elif col == "T":
-                tot_T += 1
-    return tot_M / tot_T
-
-
-shapes = []
-for index in range(len(pizza.prime_factors)):
-    shapes.append((pizza.prime_factors[index], pizza.prime_factors[-(index + 1)]))
-print("possible shapes=" + str(shapes))
-
-#STU look here
-for row_index, row in enumerate(pizza.PIZZA):
-    for col_index, col in enumerate(row):
-        if not pizza.used[row_index][col_index]:
-            slice_indexes = []
-            # find all the valid pieces
-            for shape in shapes:
-                try:
-                    slice_indexes.append((row_index, row_index + shape[0] - 1, col_index, col_index + shape[1] - 1))
-                    if pizza.is_valid_slice(slice_indexes[-1][0], slice_indexes[-1][1], slice_indexes[-1][2], slice_indexes[-1][3]):
-                        break
-                    else:
-                        del slice_indexes[-1]
-                except IndexError:  # the shape passed outside of the pizza
-                        del slice_indexes[-1]
-
-            # Greedily select the best piece, looking for a M:T ratio similar to that of the entire pizza
-            best_ratio = pizza.MT_ratio * 10  # just an arbitarily choose a bad ratio
-            best_slice = []
-            for slice in slice_indexes:
-                ratio = calc_MT_ratio(pizza.get_slice(slice[0], slice[1], slice[2], slice[3]))
-
-                # normalise the slice's M:T ratio to be the same (either <=1 or >1) as the pizza M:T ratio
-                if pizza.MT_ratio > 1 >= ratio or ratio <= 1 < pizza.MT_ratio:
-                    ratio = 1 / ratio
-                if pizza.MT_ratio - ratio < pizza.MT_ratio - best_ratio:
-                    best_ratio = ratio
-                    best_slice = slice
-            print("best_slice=" + str(best_slice))
-
-pizza.print_all()
-
+# def calc_MT_ratio(slice):
+#     print("slice to be ratio-ed=" + str(slice))
+#     tot_M = 0
+#     tot_T = 0
+#     for row_index, row in enumerate(slice):
+#         for col_index, col in enumerate(row):
+#             if col == "M":
+#                 tot_M += 1
+#             elif col == "T":
+#                 tot_T += 1
+#     return tot_M / tot_T
+#
+#
+# shapes = []
+# for index in range(len(pizza.prime_factors)):
+#     shapes.append((pizza.prime_factors[index], pizza.prime_factors[-(index + 1)]))
+# print("possible shapes=" + str(shapes))
+#
+# # STU look here
+# for row_index, row in enumerate(pizza.PIZZA):
+#     for col_index, col in enumerate(row):
+#         if not pizza.used[row_index][col_index]:
+#             slice_indexes = []
+#             # find all the valid pieces
+#             for shape in shapes:
+#                 try:
+#                     slice_indexes.append((row_index, row_index + shape[0] - 1, col_index, col_index + shape[1] - 1))
+#                     if pizza.is_valid_slice(slice_indexes[-1][0], slice_indexes[-1][1], slice_indexes[-1][2],
+#                                             slice_indexes[-1][3]):
+#                         break
+#                     else:
+#                         del slice_indexes[-1]
+#                 except IndexError:  # the shape passed outside of the pizza
+#                     del slice_indexes[-1]
+#
+#             # Greedily select the best piece, looking for a M:T ratio similar to that of the entire pizza
+#             best_ratio = pizza.MT_ratio * 10  # just an arbitarily choose a bad ratio
+#             best_slice = []
+#             for slice in slice_indexes:
+#                 ratio = calc_MT_ratio(pizza.get_slice(slice[0], slice[1], slice[2], slice[3]))
+#
+#                 # normalise the slice's M:T ratio to be the same (either <=1 or >1) as the pizza M:T ratio
+#                 if pizza.MT_ratio > 1 >= ratio or ratio <= 1 < pizza.MT_ratio:
+#                     ratio = 1 / ratio
+#                 if pizza.MT_ratio - ratio < pizza.MT_ratio - best_ratio:
+#                     best_ratio = ratio
+#                     best_slice = slice
+#             print("best_slice=" + str(best_slice))
+#
+# pizza.print_all()
 
 # Stu
 
@@ -293,6 +298,5 @@ for y in range(pizza.get_height()):
         slices.append([ystart, xstart, yend, xend])
         print("sliced between rows (" + str(ystart) + "," + str(yend) + ") and columns (" + str(xstart) + "," + str(
             xend) + ")")
-
 
 validate_solution(slices)
