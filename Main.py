@@ -13,9 +13,10 @@ import math
 
 
 def validate_solution(slices):
-    num_slices=0
+    num_slices = len(slices)
     print(num_slices)
-    print
+    for slice in slices:
+        print('{} {} {} {}'.format(slice[0], slice[1], slice[2], slice[3]))
 
 
 class Pizza(object):
@@ -62,24 +63,6 @@ class Pizza(object):
         for row in self.used:
             print(str(row))
 
-    # TODO add checks to ensure slices cannot overlap
-    def get_slice(self, row_from, row_to, col_from, col_to):
-        """ Returns the cut of our pizza & marks the proper cells as being used
-            NOTE: The rows and columns given as parameters ARE INCLUDED in the final pizza slice
-            returns -1 if is_valid = False"""
-        if (is_valid(row_from, row_to, col_from, col_to)):
-            for row_index, row in enumerate(self.used[row_from:row_to + 1][col_from:col_to + 1]):
-                for col_index, col in enumerate(self.used[row_from:row_to + 1][col_from:col_to + 1]):
-                    self.used[row_index][col_index] = True
-            return self.PIZZA[row_from:row_to + 1][col_from:col_to + 1]
-        return -1
-
-    def get_height(self):
-        return len(self.PIZZA)
-
-    def get_width(self):
-        return len(self.PIZZA[0])
-
     def is_valid_slice(self, row_from, row_to, col_from, col_to):
         '''Ensure slices are valid, do not overlap and contain the correct number of ingredients'''
 
@@ -102,18 +85,30 @@ class Pizza(object):
 
         return True;
 
+    def get_slice(self, row_from, row_to, col_from, col_to):
+        """ Returns the cut of our pizza & marks the proper cells as being used
+            NOTE: The rows and columns given as parameters ARE INCLUDED in the final pizza slice
+            returns -1 if is_valid = False"""
+        if (self.is_valid_slice(row_from, row_to, col_from, col_to)):
+            for row_index, row in enumerate(self.used[row_from:row_to + 1][col_from:col_to + 1]):
+                for col_index, col in enumerate(self.used[row_from:row_to + 1][col_from:col_to + 1]):
+                    self.used[row_index][col_index] = True
+            return self.PIZZA[row_from:row_to + 1][col_from:col_to + 1]
+        return -1
+
+    def get_height(self):
+        return len(self.PIZZA)
+
+    def get_width(self):
+        return len(self.PIZZA[0])
+
 
 file = open("example.in")
 pizza = Pizza(file)
 pizza.print_all()
 
-
 # Boyd
 # IDEA: start in top-left corner, place the larges block you can(try to keep the M-T ratio == 1:1)
-def is_valid(slice):
-    for row_index, row in enumerate(slice):
-        for col_index, col in enumerate(slice):
-            pass  # Luc start here
 
 
 shapes = []
@@ -141,104 +136,103 @@ else:
     STR_LIMITING_INGREDIENT = 'T'
 slices = []
 for y in range(pizza.get_height()):
-	for x in range(pizza.get_width()):
-		if pizza.used[y][x]:
-			continue
-			
-		# potential slice dimensions
-		xstart = x
-		xend = x
-		ystart = y
-		yend = y
-		while (xend - xstart + 1) * (yend - ystart + 1) < pizza.MAX_CELLS:
-			
-			# option 1: do nothing
-			tomatoes = 0
-			mushrooms = 0
-			
-			for y2 in range(ystart, yend + 1):
-				for x2 in range(xstart, xend + 1):
-					if pizza.PIZZA[y2][x2] == 'T':
-						tomatoes += 1
-					elif pizza.PIZZA[y2][x2] == 'M':
-						mushrooms += 1
-			
-			# the difference between remaining tomatoes and remaining mushrooms if we choose option 1
-			option_1_difference = math.fabs((remaining_tomatoes - tomatoes) - (remaining_mushrooms - mushrooms))
-			
-			# option 2: move one across
-			xend += 1
-			if xend >= pizza.get_width() or pizza.used[yend][xend] or ((xend - xstart + 1) * (yend - ystart + 1) > pizza.MAX_CELLS):
-				option_2_difference = sys.maxsize # can't do this option
-			else:
-				tomatoes = 0
-				mushrooms = 0
-				
-				for y2 in range(ystart, yend + 1):
-					for x2 in range(xstart, xend + 1):
-						if pizza.PIZZA[y2][x2] == 'T':
-							tomatoes += 1
-						elif pizza.PIZZA[y2][x2] == 'M':
-							mushrooms += 1
-				
-				# the difference between remaining tomatoes and remaining mushrooms if we choose option 2
-				option_2_difference = math.fabs((remaining_tomatoes - tomatoes) - (remaining_mushrooms - mushrooms))
-			
-			xend -= 1 # undo the change while we test option 3
-			
-			# option 3: move one down
-			yend += 1
-			if yend >= pizza.get_height() or pizza.used[yend][xend] or ((xend - xstart + 1) * (yend - ystart + 1) > pizza.MAX_CELLS):
-				option_3_difference = sys.maxsize # can't do this option
-			else:
-				tomatoes = 0
-				mushrooms = 0
-				
-				for y2 in range(ystart, yend + 1):
-					for x2 in range(xstart, xend + 1):
-						if pizza.PIZZA[y2][x2] == 'T':
-							tomatoes += 1
-						elif pizza.PIZZA[y2][x2] == 'M':
-							mushrooms += 1
-				
-				# the difference between remaining tomatoes and remaining mushrooms if we choose option 3
-				option_3_difference = math.fabs((remaining_tomatoes - tomatoes) - (remaining_mushrooms - mushrooms))
-			
-			yend -= 1 # undo the change
-			
-			# time to decide which opion to take
-			# we want to minimize difference between the remaining mushrooms and remaining tomatoes
-		
-			if option_3_difference <= option_2_difference and option_3_difference <= option_1_difference:
-				# option 3 wins! we're going to expand our slice one down!
-				yend += 1
-			elif option_2_difference <= option_1_difference:
-				# option 2 wins! we're going to expand our slice one across!
-				xend += 1
-			else:
-				# option 1 wins! we're not going to change our slice size
-				break
-			
-		tomatoes = 0
-		mushrooms = 0
-		
-		for y2 in range(ystart, yend + 1):
-			for x2 in range(xstart, xend + 1):
-				pizza.used[y2][x2] = True
-				if pizza.PIZZA[y2][x2] == 'T':
-					tomatoes += 1
-				elif pizza.PIZZA[y2][x2] == 'M':
-					mushrooms += 1
-		
-		remaining_mushrooms -= mushrooms
-		remaining_tomatoes -= tomatoes
-		
-		slices.append([ystart, xstart, yend, xend])
-		print("sliced between rows (" + str(ystart) + "," + str(yend) + ") and columns (" + str(xstart) + "," + str(xend) + ")")
-# Luc
-# TODO Split graph into tetris-style array.
-pizza.MAX_CELLS
+    for x in range(pizza.get_width()):
+        if pizza.used[y][x]:
+            continue
+
+        # potential slice dimensions
+        xstart = x
+        xend = x
+        ystart = y
+        yend = y
+        while (xend - xstart + 1) * (yend - ystart + 1) < pizza.MAX_CELLS:
+
+            # option 1: do nothing
+            tomatoes = 0
+            mushrooms = 0
+
+            for y2 in range(ystart, yend + 1):
+                for x2 in range(xstart, xend + 1):
+                    if pizza.PIZZA[y2][x2] == 'T':
+                        tomatoes += 1
+                    elif pizza.PIZZA[y2][x2] == 'M':
+                        mushrooms += 1
+
+            # the difference between remaining tomatoes and remaining mushrooms if we choose option 1
+            option_1_difference = math.fabs((remaining_tomatoes - tomatoes) - (remaining_mushrooms - mushrooms))
+
+            # option 2: move one across
+            xend += 1
+            if xend >= pizza.get_width() or pizza.used[yend][xend] or (
+                    (xend - xstart + 1) * (yend - ystart + 1) > pizza.MAX_CELLS):
+                option_2_difference = sys.maxsize  # can't do this option
+            else:
+                tomatoes = 0
+                mushrooms = 0
+
+                for y2 in range(ystart, yend + 1):
+                    for x2 in range(xstart, xend + 1):
+                        if pizza.PIZZA[y2][x2] == 'T':
+                            tomatoes += 1
+                        elif pizza.PIZZA[y2][x2] == 'M':
+                            mushrooms += 1
+
+                # the difference between remaining tomatoes and remaining mushrooms if we choose option 2
+                option_2_difference = math.fabs((remaining_tomatoes - tomatoes) - (remaining_mushrooms - mushrooms))
+
+            xend -= 1  # undo the change while we test option 3
+
+            # option 3: move one down
+            yend += 1
+            if yend >= pizza.get_height() or pizza.used[yend][xend] or (
+                    (xend - xstart + 1) * (yend - ystart + 1) > pizza.MAX_CELLS):
+                option_3_difference = sys.maxsize  # can't do this option
+            else:
+                tomatoes = 0
+                mushrooms = 0
+
+                for y2 in range(ystart, yend + 1):
+                    for x2 in range(xstart, xend + 1):
+                        if pizza.PIZZA[y2][x2] == 'T':
+                            tomatoes += 1
+                        elif pizza.PIZZA[y2][x2] == 'M':
+                            mushrooms += 1
+
+                # the difference between remaining tomatoes and remaining mushrooms if we choose option 3
+                option_3_difference = math.fabs((remaining_tomatoes - tomatoes) - (remaining_mushrooms - mushrooms))
+
+            yend -= 1  # undo the change
+
+            # time to decide which opion to take
+            # we want to minimize difference between the remaining mushrooms and remaining tomatoes
+
+            if option_3_difference <= option_2_difference and option_3_difference <= option_1_difference:
+                # option 3 wins! we're going to expand our slice one down!
+                yend += 1
+            elif option_2_difference <= option_1_difference:
+                # option 2 wins! we're going to expand our slice one across!
+                xend += 1
+            else:
+                # option 1 wins! we're not going to change our slice size
+                break
+
+        tomatoes = 0
+        mushrooms = 0
+
+        for y2 in range(ystart, yend + 1):
+            for x2 in range(xstart, xend + 1):
+                pizza.used[y2][x2] = True
+                if pizza.PIZZA[y2][x2] == 'T':
+                    tomatoes += 1
+                elif pizza.PIZZA[y2][x2] == 'M':
+                    mushrooms += 1
+
+        remaining_mushrooms -= mushrooms
+        remaining_tomatoes -= tomatoes
+
+        slices.append([ystart, xstart, yend, xend])
+        print("sliced between rows (" + str(ystart) + "," + str(yend) + ") and columns (" + str(xstart) + "," + str(
+            xend) + ")")
 
 
-
-show_score(slices)
+validate_solution(slices)
