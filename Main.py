@@ -5,10 +5,10 @@
 # No overlapping
 
 # the TO-DO list:
-#todo figure out how to cut up pizza
+# todo figure out how to cut up pizza
 
 
-#Final Code:
+# Final Code:
 class Pizza(object):
     def __init__(self, file):
         is_first_line = True
@@ -24,8 +24,8 @@ class Pizza(object):
             else:
                 self.PIZZA.append([])
                 for char_index, char in enumerate(row):
-                    if char_index < len(row)-1:
-                        self.PIZZA[row_index-1].append(char)
+                    if char_index < len(row) - 1:
+                        self.PIZZA[row_index - 1].append(char)
                         if char == "M":
                             self.TOT_MUSHROOMS += 1
                         elif char == "T":
@@ -48,9 +48,13 @@ class Pizza(object):
         for row in self.used:
             print(str(row))
 
-    def cut(self, row_from, row_to, col_from, col_to):
-        for
-
+    def get_slice(self, row_from, row_to, col_from, col_to):
+        # Returns the cut of our pizza & marks the proper cells as being used
+        # NOTE: The rows and columns given as parameters ARE INCLUDED in the final pizza slice
+        for row in self.used[row_from:row_to + 1][col_from:col_to + 1]:
+            for col in self.used[row_from:row_to + 1][col_from:col_to + 1]:
+                self.used[row][col] = True
+        return self.PIZZA[row_from:row_to + 1][col_from:col_to + 1]
 
 
 file = open("example.in")
@@ -61,9 +65,9 @@ pizza.print_all()
 
 
 
-#Stu
+# Stu
 
 
 
 
-#Luc
+# Luc
