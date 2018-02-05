@@ -12,13 +12,6 @@ import sys
 import math
 
 
-def validate_solution(slices):
-    num_slices = len(slices)
-    print(num_slices)
-    for slice in slices:
-        print('{} {} {} {}'.format(slice[0], slice[1], slice[2], slice[3]))
-
-
 class Pizza(object):
     def __init__(self, file):
         is_first_line = True
@@ -93,7 +86,7 @@ class Pizza(object):
         return len(self.PIZZA[0])
 
     def is_valid_slice(self, row_from, row_to, col_from, col_to):
-        """Ensure slices are valid, do not overlap and contain the correct number of ingredients"""
+        '''Ensure slices are valid, do not overlap and contain the correct number of ingredients'''
 
         # Slice isn't outside of the pizza
         if row_from < 0 or row_to >= pizza.get_height() or col_from < 0 or col_to >= pizza.get_width():
@@ -144,6 +137,20 @@ pizza = Pizza(file)
 
 
 # pizza.print_all()
+
+
+
+def validate_solution(slices):
+    print('Solution\n')
+    num_slices = 0
+    print(num_slices)
+    for slice in slices:
+        # for every item in each slice count mushrooms and tomatoes and ensure that they are more than the minimum
+        # and the sum is less than the maximum else invalidate and do not print, do not increment counter
+        for row in range(slice[0], slice[2] + 1):
+            for col in range(slice[1], slice[2] + 1):
+                print('{} {} {} {}'.format(slice[0], slice[1], slice[2], slice[3]))
+                num_slices+=1
 
 
 # Boyd
