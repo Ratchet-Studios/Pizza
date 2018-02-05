@@ -40,17 +40,21 @@ class Pizza(object):
                             self.TOT_MUSHROOMS += 1
                         elif char == "T":
                             self.TOT_TOMATOES += 1
+        self.MT_ratio = self.TOT_MUSHROOMS / self.TOT_TOMATOES
         self.used = []
         for i in range(len(self.PIZZA)):
             self.used.append([])
             for j in range(len(self.PIZZA[i])):
                 self.used[i].append(False)
 
-        self.prime_factors = []
-        for num in range(1, self.MAX_CELLS + 1):
-            if self.MAX_CELLS % num == 0:
-                self.prime_factors.append(num)
-        self.MT_ratio = self.TOT_MUSHROOMS / self.TOT_TOMATOES
+        self.prime_factors = self.get_factors(self.MAX_CELLS)
+
+    def get_factors(self, num):
+        returner = []
+        for possible_factor in range(1, num + 1):
+            if num % possible_factor == 0:
+                returner.append(possible_factor)
+        return returner
 
     def print_all(self):
         print("Pizza=")
@@ -89,7 +93,11 @@ class Pizza(object):
         return len(self.PIZZA[0])
 
     def is_valid_slice(self, row_from, row_to, col_from, col_to):
-        '''Ensure slices are valid, do not overlap and contain the correct number of ingredients'''
+        """Ensure slices are valid, do not overlap and contain the correct number of ingredients"""
+
+        # Slice isn't outside of the pizza
+        if row_from < 0 or row_to >= pizza.get_height() or col_from < 0 or col_to >= pizza.get_width():
+            return False
 
         # Correct number of ingredients
         num_mushrooms, num_tomatoes = 0, 0
@@ -103,9 +111,9 @@ class Pizza(object):
             return False
 
         # check for overlaps
-        for row_index, row in enumerate(self.used[row_from:row_to + 1]):
-            for col_index, col in enumerate(row[col_from:col_to + 1]):
-                if (self.used[row_index][col_index]):
+        for row in self.used[row_from:row_to + 1]:
+            for col in row[col_from:col_to + 1]:
+                if (col):
                     return False
 
         return True
@@ -115,27 +123,31 @@ class Pizza(object):
         """ Returns the cut of our pizza & marks the proper cells as being used
             NOTE: The rows and columns given as parameters ARE INCLUDED in the final pizza slice
             returns -1 if is_valid = False"""
-        if (self.is_valid_slice(row_from, row_to, col_from, col_to)):
-            for row_index, row in enumerate(self.used[row_from:row_to + 1]):
+        assert self.is_valid_slice(row_from, row_to, col_from, col_to)
+        if should_mark_as_used:
+            for row_index, row in enumerate(self.PIZZA[row_from:row_to + 1]):
                 for col_index, col in enumerate(row[col_from:col_to + 1]):
-                    self.used[row_index][col_index] = True and should_mark_as_used
-            return self.PIZZA[row_from:row_to + 1][col_from:col_to + 1]
-        return -1
+                    self.used[row_index][col_index] = True
+        return [x[col_from:col_to + 1] for x in self.PIZZA[row_from:row_to + 1]]
 
-    def get_height(self):
-        return len(self.PIZZA)
 
-    def get_width(self):
-        return len(self.PIZZA[0])
+def get_height(self):
+    return len(self.PIZZA)
+
+
+def get_width(self):
+    return len(self.PIZZA[0])
 
 
 file = open("example.in")
 pizza = Pizza(file)
-pizza.print_all()
+
+
+# pizza.print_all()
 
 
 # Boyd
-# IDEA: start in top-left corner, place the larges block you can(try to keep the M-T ratio == 1:1)
+# IDEA: start in top-left corner, place the larges block you can(try to keep the M-T ratio close to that of the PIZZA)
 
 def calc_MT_ratio(slice):
     tot_M = 0
@@ -146,42 +158,49 @@ def calc_MT_ratio(slice):
                 tot_M += 1
             elif col == "T":
                 tot_T += 1
+    assert tot_T != 0, "slice=" + str(slice)
     return tot_M / tot_T
 
 
+# Get every possible shape's dimensions, from 1x1 up to the max dictated by MAX_CELLS
 shapes = []
-for index in range(len(pizza.prime_factors)):
-    shapes.append((pizza.prime_factors[index], pizza.prime_factors[-(index + 1)]))
+for x in range(1, pizza.MAX_CELLS + 1):
+    factors = pizza.get_factors(x)
+    for factor_index in range(len(factors)):
+        if (factors[factor_index], factors[-(factor_index + 1)]) not in shapes:
+            shapes.append((factors[factor_index],
+                           factors[-(factor_index + 1)]))
+print("shapes={}".format(shapes))
 
 for row_index, row in enumerate(pizza.PIZZA):
     for col_index, col in enumerate(row):
-        if not pizza.used[row_index][col_index]:
-            slice_indexes = []
-            # find all the valid slices
-            for shape in shapes:
-                slice_indexes.append((row_index, row_index + shape[0] - 1, col_index, col_index + shape[1] - 1))
-                if not pizza.is_valid_slice(slice_indexes[-1][0], slice_indexes[-1][1], slice_indexes[-1][2],
-                                            slice_indexes[-1][3]):
-                    del slice_indexes[-1]
+        if pizza.used[row_index][col_index]:
+            continue
+        slice_indexes = []
+        # find all the valid slices
+        for shape in shapes:
+            if pizza.is_valid_slice(row_index, row_index + shape[0], col_index, col_index + shape[1]):
+                slice_indexes.append((row_index, row_index + shape[0], col_index, col_index + shape[1]))
 
-            # Greedily select the best piece, looking for a M:T ratio similar to that of the entire pizza
-            best_ratio = pizza.MT_ratio * 10  # just an arbitrarily choose a bad ratio
-            best_slice_indexes = []
-            for slice_index in slice_indexes:
-                ratio = calc_MT_ratio(pizza.get_slice(slice_index[0], slice_index[1], slice_index[2], slice_index[3],
-                                                      should_mark_as_used=False))
-                # normalise the slice's M:T ratio to be the same (either <=1 or >1) as the pizza M:T ratio
-                if pizza.MT_ratio > 1 >= ratio or ratio <= 1 < pizza.MT_ratio:
-                    ratio = 1 / ratio
-                if abs(pizza.MT_ratio - ratio) < abs(pizza.MT_ratio - best_ratio):
-                    best_ratio = ratio
-                    best_slice_indexes = slice_index
-            print("best_slice for PIZZA[{}][{}] = {}".format(row_index, col_index, best_slice_indexes))
-            # mark the best slice as being 'used' on the pizza
-            pizza.get_slice(best_slice_indexes[0], best_slice_indexes[0], best_slice_indexes[0], best_slice_indexes[0],
-                            should_mark_as_used=True)
-
+        # Greedily select the best piece, looking for a M:T ratio similar to that of the entire pizza
+        best_ratio = pizza.MT_ratio * 10  # just an arbitrarily choose a bad ratio
+        best_slice_indexes = []
+        for slice_index in slice_indexes:
+            ratio = calc_MT_ratio(pizza.get_slice(
+                slice_index[0], slice_index[1], slice_index[2], slice_index[3], should_mark_as_used=False))
+            # normalise the slice's M:T ratio to be the same (either <=1 or >1) as the pizza M:T ratio
+            if pizza.MT_ratio > 1 >= ratio or ratio <= 1 < pizza.MT_ratio:
+                ratio = 1 / ratio
+            if abs(pizza.MT_ratio - ratio) < abs(pizza.MT_ratio - best_ratio):
+                best_ratio = ratio
+                best_slice_indexes = slice_index
+        print("best_slice for PIZZA[{}][{}] = {}".format(row_index, col_index, best_slice_indexes))
+        if best_slice_indexes != []:
+            # mark the best slice as being 'used' on the pizza so that it won't be overlapped next time
+            pizza.get_slice(best_slice_indexes[0], best_slice_indexes[1], best_slice_indexes[2], best_slice_indexes[3])
+print("\n\n\nprint_all")
 pizza.print_all()
+print("\n\n\nSTU")
 
 # Stu
 
